@@ -3,7 +3,8 @@ from setuptools import setup
 setup(
     name='judinfo-cli',
     version='0.1.0',
-    py_modules=['judinfo_cli'],
+    py_modules=['judinfo_cli', 'config'],
+    include_package_data=True,
     install_requires=[
         'click>=8.0.0',
         'requests>=2.25.0',
