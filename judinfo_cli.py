@@ -119,7 +119,7 @@ def main(processo, tribunal, verificar, saida):
     click.echo(ctx.get_help())
 
 def exibir_resumo(processo):
-    """Exibe resuno organizado do processo, apenas com os dados essenciais."""
+    """Exibe resumo organizado do processo."""
     click.echo("\n" + "="*50)
     click.echo("📄 RESUMO DO PROCESSO")
     click.echo("="*50)
@@ -130,6 +130,15 @@ def exibir_resumo(processo):
         click.echo(f"📋 Classe: {processo['classe'].get('nome', 'N/A')}")
     click.echo(f"📅 Data de Ajuizamento: {formatar_data(processo.get('dataAjuizamento'))}")
     click.echo(f"⚖️  Grau: {processo.get('grau', 'N/A')}")
+    if processo.get('sistema'):
+        click.echo(f"🖥️  Sistema: {processo['sistema'].get('nome', 'N/A')}")
+    if processo.get('formato'):
+        click.echo(f"📁 Formato: {processo['formato'].get('nome', 'N/A')}")
+    if processo.get('orgaoJulgador'):
+        click.echo(f"👨‍⚖️  Órgão Julgador: {processo['orgaoJulgador'].get('nome', 'N/A')}")
+    if processo.get('assuntos'):
+        assuntos = ", ".join([a.get('nome', 'N/A') for a in processo['assuntos']])
+        click.echo(f"🏷️  Assuntos: {assuntos}")
     movimentos = processo.get('movimentos', [])
     click.echo(f"🔄 Total de Movimentos: {len(movimentos)}")
     if movimentos:
@@ -142,7 +151,14 @@ def exibir_resumo(processo):
 def exibir_completo(processo):
     """Exibe versão mais detalhada do processo."""
     exibir_resumo(processo)
-    # continuar daqui...
+    movimentos = processo.get('movimentos', [])
+    if movimentos:
+        click.echo("\n📋 ÚLTIMOS 5 MOVIMENTOS:")
+        click.echo("-" * 40)
+        # Mostra os últimos 5 movimentos, do mais recente ao mais antigo
+        for mov in reversed(movimentos[-5:]):
+            data_formatada = formatar_data(mov.get('dataHora'))
+            click.echo(f"  {data_formatada} - {mov.get('nome', 'N/A')}")
 
 def formatar_data(data_string):
     """Formata data para formato legível: DD/MM/AAAA HH:MM."""
