@@ -67,3 +67,6 @@ venv.bak/
 *.swp
 *.swo
 *~
+
+# Log files
+flask_output.log
