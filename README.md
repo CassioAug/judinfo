@@ -1,37 +1,36 @@
-# JudInfo
+﻿# JudInfo
 
-**JudInfo** é uma ferramenta de linha de comando (CLI) desenvolvida em Python para consultar informações de processos judiciais brasileiros diretamente da API pública [DataJud](https://datajud-wiki.cnj.jus.br/) do Conselho Nacional de Justiça (CNJ).
+**JudInfo** é uma ferramenta de linha de comando (CLI) escrita em Python para consultar informações de processos judiciais brasileiros por meio da API pública DataJud (CNJ).
 
-Esta ferramenta foi pensada para advogados, analistas e desenvolvedores que precisam de acesso rápido e automatizado a dados processuais sem a necessidade de navegar por múltiplos sites de tribunais.
+> Este arquivo contém instruções em Português (Brasil). A versão em inglês está em `README.en.md`.
 
-## ✨ Funcionalidades
+## Funcionalidades principais
 
-- **Consulta de Processos**: Busque um processo por seu número em um tribunal específico.
-- **Busca Ampla**: Procure um processo em **todos** os tribunais suportados pela API de uma só vez.
-- **Verificação de Status**: Verifique a disponibilidade (online/offline) da API do DataJud ou de tribunais específicos.
-- **Listagem de Tribunais**: Exiba uma lista completa e organizada de todos os códigos de tribunais disponíveis para consulta.
-- **Formatos de Saída**: Escolha como visualizar os dados do processo:
-  - _resumo:_ Um resumo limpo e organizado (padrão).
-  - _completo:_ Resumo mais os últimos 5 movimentos processuais.
-  - _json:_ A saída de dados brutos da API, ideal para integração com outros sistemas.
-- **Interface Amigável**: Comandos simples e intuitivos, com barras de progresso para operações demoradas.
+- Consultar um processo por número em um tribunal específico.
+- Buscar um processo em todos os tribunais suportados (busca ampla).
+- Verificar status da API/tribunais (online/offline).
+- Listar códigos de tribunais disponíveis.
+- Saídas em `resumo` (padrão), `completo` e `json`.
 
-## ⚙️ Instalação
+## Requisitos
 
-Tenha o Python instalado e atualizado em sua máquina.
+- Python 3.8+ (recomendado)
+- Git
 
-### 1. Clone o repositório
+## Instalação
+
+1. Clone o repositório e entre na pasta do projeto:
 
 ```bash
 git clone https://github.com/CassioAug/judinfo.git
-cd judinfo-cli
+cd judinfo
 ```
 
-### 2. Crie um ambiente virtual e instale as dependências
+2. Crie um ambiente virtual e instale dependências.
 
-#### WINDOWS (CMD)
+- Windows (Prompt de Comando):
 
-```bash
+```cmd
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install --upgrade pip
@@ -39,21 +38,19 @@ pip install -r requirements.txt
 pip install --editable .
 ```
 
-#### WINDOWS (GIT BASH / POWERSHELL)
+- Windows (PowerShell):
 
-```bash
+```powershell
 python -m venv .venv
-source .venv/Scripts/activate
+.\.venv\Scripts\Activate.ps1
 pip install --upgrade pip
 pip install -r requirements.txt
 pip install --editable .
 ```
 
-#### LINUX (DEBIAN / UBUNTU)
+- macOS / Linux / Git Bash:
 
 ```bash
-sudo apt update
-sudo apt install python3-venv python3-pip git -y
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -61,97 +58,104 @@ pip install -r requirements.txt
 pip install --editable .
 ```
 
-## 🚀 Como Usar
+> Observação: em PowerShell a política de execução pode impedir a execução de scripts; se necessário, ajuste `Set-ExecutionPolicy` com cautela.
 
-## 🧰 Python version & production notes
+## Uso
 
-- Recommended Python version: 3.8+ (code uses `fromisoformat` and f-strings; 3.7+ works but 3.8+ is preferred).
-- For production deployments consider using a WSGI server (example using `gunicorn` on Linux):
+Você pode usar a CLI instalada (`judinfo`) ou executar o script diretamente com Python.
 
-```bash
-# install production extras
-pip install -r requirements-prod.txt
-
-# run with gunicorn (Linux/WSGI environment):
-gunicorn -w 4 -b 0.0.0.0:8000 judinfo_web:app
-```
-
-Note: `gunicorn` is not supported on Windows the same way; for local development on Windows use `python judinfo_web.py`.
-
-## 🧰 Developer setup (local)
-
-If you're contributing or running tests locally, create a venv and install development dependencies:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate
-pip install --upgrade pip
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-pip install --editable .
-```
-
-Run tests and linters:
-
-```powershell
-# run tests
-pytest -q
-
-# format with black
-black .
-
-# static type check
-mypy judinfo_cli.py judinfo_web.py
-```
-
-### 1. Listar todos os tribunais
-
-Para ver uma lista completa de todos os códigos de tribunais que você pode usar nas buscas.
+- Listar tribunais:
 
 ```bash
 judinfo --listar-tribunais
+# ou
+python judinfo_cli.py --listar-tribunais
 ```
 
-### 2. Verificar o status da API e dos tribunais
-
-Verificar o status da API:
+- Verificar status (API / tribunais):
 
 ```bash
 judinfo --verificar api
-```
-
-Verificar um único tribunal:
-
-```bash
 judinfo -v tjmg
-```
-
-Verificar múltiplos tribunais:
-
-```bash
 judinfo -v tjsp,tjrj,trf1
-```
-
-Verificar todos os tribunais:
-
-```bash
 judinfo -v all
 ```
 
-### 3. Consultar um processo
-
-Consultar em tribunal específico:
+- Consultar um processo (tribunal específico):
 
 ```bash
 judinfo --processo "NUMERO_DO_PROCESSO" --tribunal tjmg
 ```
 
-Buscar processo em todos os tribunais:
+- Buscar em todos os tribunais:
 
 ```bash
-judinfo -processo "NUMERO_DO_PROCESSO" -tribunal all
+judinfo --processo "NUMERO_DO_PROCESSO" --tribunal all
 ```
 
-## 📝 Observações
+- Executar a interface web localmente:
 
-O funcionamento e performance desta ferramenta depende diretamente da disponibilidade e velocidade da API DataJud do CNJ.
+## Exemplos
+
+Exemplos rápidos com números fictícios (apenas para demonstração):
+
+- Consultar um processo no Tribunal de Justiça de Minas Gerais (TJMG):
+
+```bash
+judinfo --processo "0000000-00.0000.0.00.0000" --tribunal tjmg
+# ou
+python judinfo_cli.py --processo "0000000-00.0000.0.00.0000" --tribunal tjmg
+```
+
+- Buscar em todos os tribunais (busca ampla):
+
+```bash
+judinfo --processo "0000000-00.0000.0.00.0000" --tribunal all
+```
+
+<!-- fim dos exemplos -->
+
+- Executar a interface web localmente:
+
+```powershell
+python judinfo_web.py
+# abra http://127.0.0.1:5000 no navegador
+```
+
+## Desenvolvimento e testes
+
+Instale dependências de desenvolvimento e rode testes:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install --editable .
+
+# rodar testes
+pytest -q
+
+# formatar (opcional)
+black .
+
+# checagem de tipos (opcional)
+mypy judinfo_cli.py judinfo_web.py
+```
+
+## Produção
+
+- Para produção, use um servidor WSGI (por exemplo `gunicorn` no Linux):
+
+```bash
+pip install -r requirements-prod.txt
+gunicorn -w 4 -b 0.0.0.0:8000 judinfo_web:app
+```
+
+- No Windows, para desenvolvimento local, use `python judinfo_web.py`.
+
+## Observações
+
+O funcionamento depende da disponibilidade da API DataJud do CNJ.
+
+A interface web utiliza CDNs (Bootstrap, Font Awesome). Se estiver em rede restrita, verifique o acesso às CDNs.

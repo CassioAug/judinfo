@@ -1,37 +1,31 @@
-# JudInfo
+﻿# JudInfo
 
-**JudInfo** is a command-line interface (CLI) tool developed in Python to query information on Brazilian legal cases directly from the public API [DataJud](https://datajud-wiki.cnj.jus.br/), provided by the National Council of Justice (CNJ) of Brazil.
+**JudInfo** is a small command-line (CLI) Python tool to query Brazilian court case information using the public DataJud API from the National Council of Justice (CNJ).
 
-This tool is designed for lawyers, analysts, and developers who need fast, automated access to case data without having to navigate multiple court websites.
+This README contains instructions in English. The Portuguese version is available at `README.md`.
 
-## ✨ Features
+## Features
 
-- **Case Search**: Look up a case by its unique number in a specific court.  
-- **Broad Search**: Search for a case across **all** courts supported by the API at once.  
-- **Status Check**: Verify the availability (online/offline) of the DataJud API or specific court endpoints.  
-- **List Courts**: Display a complete, organized list of all available court codes for queries.  
-- **Output Formats**: Choose how to view the case data:  
-  - _resumo:_ A clean and organized summary (default).  
-  - _completo:_ The summary plus the last 5 case movements.  
-  - _json:_ The raw data output from the API, ideal for integration with other systems.  
-- **User-Friendly Interface**: Simple and intuitive commands, with progress bars for time-consuming operations.
+- Case search by number on a specific court.
+- Broad search across all supported courts.
+- Status checks for API and court endpoints.
+- List available court codes.
+- Output formats: `resumo` (default), `completo`, `json`.
 
-## ⚙️ Instllation
+## Installation
 
-You must have Python and Git installed and updated on your machine.
-
-### 1. Clone the repository
+1. Clone the repository and enter the project folder:
 
 ```bash
 git clone https://github.com/CassioAug/judinfo.git
-cd judinfo-cli
+cd judinfo
 ```
 
-### Create a virtual environment and install dependencies
+2. Create a virtual environment and install dependencies.
 
-#### WINDOWS (CMD)
+- Windows (Command Prompt):
 
-```bash
+```cmd
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install --upgrade pip
@@ -39,21 +33,19 @@ pip install -r requirements.txt
 pip install --editable .
 ```
 
-#### WINDOWS (GIT BASH / POWERSHELL)
+- Windows (PowerShell):
 
-```bash
+```powershell
 python -m venv .venv
-source .venv/Scripts/activate
+.\.venv\Scripts\Activate.ps1
 pip install --upgrade pip
 pip install -r requirements.txt
 pip install --editable .
 ```
 
-#### LINUX (DEBIAN / UBUNTU)
+- macOS / Linux / Git Bash:
 
 ```bash
-sudo apt update
-sudo apt install python3-venv python3-pip git -y
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -61,56 +53,95 @@ pip install -r requirements.txt
 pip install --editable .
 ```
 
-## 🚀 How to Use
+## How to Use
 
-### 1. List all courts
+You can use the installed `judinfo` command (when installed) or run the scripts directly with Python.
 
-To see a complete list of all the court codes you can use in your searches.
+- List courts:
 
 ```bash
 judinfo --listar-tribunais
+# or
+python judinfo_cli.py --listar-tribunais
 ```
 
-### 2. Check API and Court Status
-
-Check API status:
+- Check API / court status:
 
 ```bash
 judinfo --verificar api
-```
-
-Check a single court:
-
-```bash
 judinfo -v tjmg
-```
-
-Check multiple courts:
-
-```bash
 judinfo -v tjsp,tjrj,trf1
-```
-
-Check all courts:
-
-```bash
 judinfo -v all
 ```
 
-### 3. Query a court case
-
-Query in a specific court:
+- Query a case in a specific court:
 
 ```bash
-judinfo --processo "NUMERO_DO_PROCESSO" --tribunal tjmg
+judinfo --processo "CASE_NUMBER" --tribunal tjmg
 ```
 
-Search for a case in all courts:
+- Query across all courts:
 
 ```bash
-judinfo -processo "NUMERO_DO_PROCESSO" -tribunal all
+judinfo --processo "CASE_NUMBER" --tribunal all
 ```
 
-## 📝 Notes
+- Run the web interface locally:
 
-The functionality and performance of this tool are directly dependent on the availability and speed of the CNJ's DataJud API.
+## Examples
+
+Quick examples using fake case numbers (for demonstration only):
+
+- Query a case on TJMG:
+
+```bash
+judinfo --processo "0000000-00.0000.0.00.0000" --tribunal tjmg
+# or
+python judinfo_cli.py --processo "0000000-00.0000.0.00.0000" --tribunal tjmg
+```
+
+- Broad search across all courts:
+
+```bash
+judinfo --processo "0000000-00.0000.0.00.0000" --tribunal all
+```
+
+<!-- end examples -->
+
+- Run the web interface locally:
+
+```bash
+python judinfo_web.py
+# open http://127.0.0.1:5000 in your browser
+```
+
+## Development & Tests
+
+Install development dependencies and run tests:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # or use the appropriate Windows activation
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install --editable .
+
+pytest -q
+```
+
+## Production
+
+For production deployments use a WSGI server such as `gunicorn` (Linux):
+
+```bash
+pip install -r requirements-prod.txt
+gunicorn -w 4 -b 0.0.0.0:8000 judinfo_web:app
+```
+
+Note: on Windows use `python judinfo_web.py` for local development.
+
+## Notes
+
+This project depends on the availability and responsiveness of the CNJ DataJud API.
+
+The web UI references CDNs (Bootstrap, Font Awesome); in restricted networks ensure CDN access or self-host the assets.
