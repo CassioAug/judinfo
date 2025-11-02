@@ -1,23 +1,39 @@
 :root {
-  --primary-color-light: #007bff;
-  --secondary-color-light: #6c757d;
-  --background-color-light: #f8f9fa;
-  --text-color-light: #212529;
+  --primary-color-light: #0d47a1;
+  --secondary-color-light: #1565c0;
+  --background-color-light: #e3f2fd;
+  --text-color-light: #000000;
   --card-background-light: #ffffff;
-  --border-color-light: #dee2e6;
+  --border-color-light: #90caf9;
+  --success-color-light: #004d40;
+  --icon-color-light: #0d47a1;
 
-  --primary-color-dark: #66b2ff;
-  --secondary-color-dark: #adb5bd;
-  --background-color-dark: #1a1a1a;
-  --text-color-dark: #f8f9fa;
-  --card-background-dark: #2c2c2c;
-  --border-color-dark: #444444;
+  --primary-color-dark: #ffd700;
+  --secondary-color-dark: #ffecb3;
+  --background-color-dark: #121212;
+  --text-color-dark: #ffffff;
+  --card-background-dark: #1e1e1e;
+  --border-color-dark: #ffd700;
+  --success-color-dark: #2e7d32;
+  --icon-color-dark: #ffd700;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   transition: background-color 0.3s, color 0.3s;
+}
+
+/* Ensure Font Awesome icons render properly */
+i[class*="fa-"] {
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+
+h1,
+h2,
+.navbar-brand {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
 }
 
 .container {
@@ -31,9 +47,71 @@ body.light-mode {
   color: var(--text-color-light);
 }
 
+body.light-mode .btn-primary {
+  background-color: var(--primary-color-light);
+  color: #ffffff;
+}
+
+body.light-mode .btn-primary i {
+  color: #ffffff;
+}
+
+body.light-mode .btn-info {
+  background-color: var(--success-color-light);
+  color: #ffffff;
+}
+
+body.light-mode .form-check-input:checked {
+  background-color: var(--primary-color-light);
+  border-color: var(--primary-color-light);
+}
+
+body.light-mode .form-check-input {
+  border-color: var(--primary-color-light);
+}
+
+body.light-mode .fa-spinner {
+  color: var(--primary-color-light);
+}
+
+body.light-mode #theme-toggle i {
+  color: #000000;
+}
+
 body.dark-mode {
   background-color: var(--background-color-dark);
   color: var(--text-color-dark);
+}
+
+body.dark-mode .btn-primary {
+  background-color: var(--primary-color-dark);
+  color: #000000;
+}
+
+body.dark-mode .btn-primary i {
+  color: #000000;
+}
+
+body.dark-mode .btn-info {
+  background-color: var(--success-color-dark);
+  color: #ffffff;
+}
+
+body.dark-mode .form-check-input:checked {
+  background-color: var(--primary-color-dark);
+  border-color: var(--primary-color-dark);
+}
+
+body.dark-mode .form-check-input {
+  border-color: var(--primary-color-dark);
+}
+
+body.dark-mode .fa-spinner {
+  color: var(--primary-color-dark);
+}
+
+body.dark-mode #theme-toggle i {
+  color: var(--primary-color-dark);
 }
 
 #theme-toggle {
@@ -79,6 +157,11 @@ body.light-mode .card {
 body.dark-mode .card {
   background-color: var(--card-background-dark);
   border-color: var(--border-color-dark);
+  color: var(--text-color-dark);
+}
+
+body.dark-mode .card-header {
+  color: var(--text-color-dark);
 }
 
 .btn-primary {

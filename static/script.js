@@ -9,20 +9,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsContainer = document.getElementById("results");
   const validationMessage = document.getElementById("validation-message");
   const searchButton = searchForm.querySelector("button[type='submit']");
+  const originalButtonText = {};
 
   // Theme toggle
   themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     document.body.classList.toggle("light-mode");
-
-    const icon = themeToggle.querySelector("i");
-    if (document.body.classList.contains("dark-mode")) {
-      icon.classList.remove("fa-sun");
-      icon.classList.add("fa-moon");
-    } else {
-      icon.classList.remove("fa-moon");
-      icon.classList.add("fa-sun");
-    }
   });
 
   // Auto-format case number
@@ -107,12 +99,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Loading state helper
   const setLoading = (button, isLoading) => {
     if (isLoading) {
+      originalButtonText[button.id] = button.innerHTML;
       button.disabled = true;
-      button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...`;
+      // Use Font Awesome 7 spinner + pulse animation
+      button.innerHTML = `<i class="fa-solid fa-spinner fa-spin-pulse"></i> Carregando...`;
       resultsContainer.style.opacity = "0.5";
     } else {
       button.disabled = false;
-      button.innerHTML = button.dataset.originalText;
+      button.innerHTML = originalButtonText[button.id];
       resultsContainer.style.opacity = "1";
     }
   };
@@ -129,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    checkStatusButton.dataset.originalText = checkStatusButton.innerHTML;
     setLoading(checkStatusButton, true);
 
     fetch("/status", {
@@ -151,8 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const item = document.createElement("div");
           item.classList.add("status-item");
           const status = results[court].success
-            ? '<span class="text-success"><i class="fas fa-check-circle"></i> Online</span>'
-            : '<span class="text-danger"><i class="fas fa-times-circle"></i> Offline</span>';
+            ? '<span class="text-success"><i class="fa-solid fa-circle-check"></i> Online</span>'
+            : '<span class="text-danger"><i class="fa-solid fa-circle-xmark"></i> Offline</span>';
           item.innerHTML = `<strong>${court.toUpperCase()}</strong>: ${status}`;
           grid.appendChild(item);
         }
@@ -179,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    searchButton.dataset.originalText = searchButton.innerHTML;
     setLoading(searchButton, true);
 
     fetch("/search", {
@@ -227,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
                               result.dataAjuizamento
                             ).toLocaleDateString()}</p>
                             <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#details-${sanitizedId}">
-                                <i class="fas fa-info-circle"></i> Show Details
+                                <i class="fa-solid fa-circle-info"></i> Show Details
                             </button>
                             <div id="details-${sanitizedId}" class="collapse mt-3">
                                 <pre>${JSON.stringify(result, null, 2)}</pre>
