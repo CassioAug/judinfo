@@ -104,7 +104,6 @@ black .
 mypy judinfo_cli.py judinfo_web.py
 ```
 
-
 ### 1. Listar todos os tribunais
 
 Para ver uma lista completa de todos os códigos de tribunais que você pode usar nas buscas.
