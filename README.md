@@ -63,6 +63,48 @@ pip install --editable .
 
 ## 🚀 Como Usar
 
+## 🧰 Python version & production notes
+
+- Recommended Python version: 3.8+ (code uses `fromisoformat` and f-strings; 3.7+ works but 3.8+ is preferred).
+- For production deployments consider using a WSGI server (example using `gunicorn` on Linux):
+
+```bash
+# install production extras
+pip install -r requirements-prod.txt
+
+# run with gunicorn (Linux/WSGI environment):
+gunicorn -w 4 -b 0.0.0.0:8000 judinfo_web:app
+```
+
+Note: `gunicorn` is not supported on Windows the same way; for local development on Windows use `python judinfo_web.py`.
+
+## 🧰 Developer setup (local)
+
+If you're contributing or running tests locally, create a venv and install development dependencies:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install --editable .
+```
+
+Run tests and linters:
+
+```powershell
+# run tests
+pytest -q
+
+# format with black
+black .
+
+# static type check
+mypy judinfo_cli.py judinfo_web.py
+```
+
+
 ### 1. Listar todos os tribunais
 
 Para ver uma lista completa de todos os códigos de tribunais que você pode usar nas buscas.

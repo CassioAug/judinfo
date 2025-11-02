@@ -42,3 +42,10 @@ Keep this short and specific to this project so an AI can be immediately product
   - `config.py` currently contains a literal `API_KEY`. For production or PRs that will be published, replace with environment-based secret loading and avoid leaking keys in commits.
 
 If anything below is unclear or you want extra examples (unit tests, CI steps, or deployment notes), say which area to expand.
+
+- Additional notes for maintainers:
+  - Recommended Python version: 3.8+.
+  - `setup.py` now includes `Flask` in `install_requires` so `pip install .` pulls web dependencies.
+  - A `requirements-prod.txt` file was added with optional production extras (`gunicorn`, `python-dotenv`) — install it only for deployments.
+  - A `requirements-dev.txt` file exists with recommended developer tooling: `pytest`, `black`, `isort`, `flake8`, `mypy` and `pre-commit`.
+  - Local developer steps: create a venv, install `requirements.txt` and `requirements-dev.txt`, then `pip install --editable .` (see README.md developer section).

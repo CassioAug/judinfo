@@ -1,0 +1,4 @@
+# Production / optional runtime extras
+# Use these when deploying to a production server (not required for local dev)
+gunicorn>=20.1.0
+python-dotenv>=1.0.0

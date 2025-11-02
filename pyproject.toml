@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "judinfo-cli"
+version = "0.1.0"
+description = "CLI + small Flask web UI to query DataJud (CNJ) public API"
+requires-python = ">=3.8"
+dependencies = [
+  "click>=8.0.0",
+  "requests>=2.25.0",
+  "Flask>=2.0.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = 3.8
+ignore_missing_imports = true
