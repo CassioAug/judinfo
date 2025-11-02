@@ -8,11 +8,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchForm = document.getElementById("search-form");
   const resultsContainer = document.getElementById("results");
   const validationMessage = document.getElementById("validation-message");
+  const searchButton = searchForm.querySelector("button[type='submit']");
 
   // Theme toggle
   themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     document.body.classList.toggle("light-mode");
+
+    const icon = themeToggle.querySelector("i");
+    if (document.body.classList.contains("dark-mode")) {
+      icon.classList.remove("fa-sun");
+      icon.classList.add("fa-moon");
+    } else {
+      icon.classList.remove("fa-moon");
+      icon.classList.add("fa-sun");
+    }
   });
 
   // Auto-format case number
@@ -49,11 +59,16 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((response) => response.json())
     .then((courts) => {
       for (const category in courts) {
-        const categoryContainer = document.createElement("div");
-        categoryContainer.classList.add("mb-3");
-        const categoryTitle = document.createElement("h4");
-        categoryTitle.textContent = category;
-        categoryContainer.appendChild(categoryTitle);
+        const categoryCard = document.createElement("div");
+        categoryCard.classList.add("card");
+
+        const cardHeader = document.createElement("div");
+        cardHeader.classList.add("card-header");
+        cardHeader.textContent = category;
+        categoryCard.appendChild(cardHeader);
+
+        const cardBody = document.createElement("div");
+        cardBody.classList.add("card-body");
 
         courts[category].forEach((court) => {
           const checkbox = document.createElement("div");
@@ -64,9 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             ${court.toUpperCase()}
                         </label>
                     `;
-          categoryContainer.appendChild(checkbox);
+          cardBody.appendChild(checkbox);
         });
-        courtsList.appendChild(categoryContainer);
+
+        categoryCard.appendChild(cardBody);
+        courtsList.appendChild(categoryCard);
       }
     });
 
@@ -87,6 +104,19 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
+  // Loading state helper
+  const setLoading = (button, isLoading) => {
+    if (isLoading) {
+      button.disabled = true;
+      button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...`;
+      resultsContainer.style.opacity = "0.5";
+    } else {
+      button.disabled = false;
+      button.innerHTML = button.dataset.originalText;
+      resultsContainer.style.opacity = "1";
+    }
+  };
+
   // Check court status
   checkStatusButton.addEventListener("click", () => {
     const selectedCourts = Array.from(
@@ -98,6 +128,9 @@ document.addEventListener("DOMContentLoaded", () => {
       validationMessage.textContent = "Please select at least one court.";
       return;
     }
+
+    checkStatusButton.dataset.originalText = checkStatusButton.innerHTML;
+    setLoading(checkStatusButton, true);
 
     fetch("/status", {
       method: "POST",
@@ -111,16 +144,23 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((results) => {
         resultsContainer.innerHTML = "";
-        const list = document.createElement("ul");
-        list.classList.add("list-group");
+        const grid = document.createElement("div");
+        grid.classList.add("status-grid");
+
         for (const court in results) {
-          const listItem = document.createElement("li");
-          listItem.classList.add("list-group-item");
-          const status = results[court].success ? "Online" : "Offline";
-          listItem.innerHTML = `<strong>${court.toUpperCase()}:</strong> ${status}`;
-          list.appendChild(listItem);
+          const item = document.createElement("div");
+          item.classList.add("status-item");
+          const status = results[court].success
+            ? '<span class="text-success"><i class="fas fa-check-circle"></i> Online</span>'
+            : '<span class="text-danger"><i class="fas fa-times-circle"></i> Offline</span>';
+          item.innerHTML = `<strong>${court.toUpperCase()}</strong>: ${status}`;
+          grid.appendChild(item);
         }
-        resultsContainer.appendChild(list);
+        resultsContainer.appendChild(grid);
+        resultsContainer.classList.add("fade-in");
+      })
+      .finally(() => {
+        setLoading(checkStatusButton, false);
       });
   });
 
@@ -138,6 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "Please enter a case number and select at least one court.";
       return;
     }
+
+    searchButton.dataset.originalText = searchButton.innerHTML;
+    setLoading(searchButton, true);
 
     fetch("/search", {
       method: "POST",
@@ -165,25 +208,38 @@ document.addEventListener("DOMContentLoaded", () => {
           const resultElement = document.createElement("div");
           resultElement.classList.add("card", "mb-3");
           resultElement.innerHTML = `
-                    <div class="card-header">
-                        ${result.tribunal}
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Número:</strong> ${result.numeroProcesso}</p>
-                        <p><strong>Classe:</strong> ${result.classe.nome}</p>
-                        <p><strong>Data de Ajuizamento:</strong> ${new Date(
-                          result.dataAjuizamento
-                        ).toLocaleDateString()}</p>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="collapse" data-bs-target="#details-${sanitizedId}">
-                            Show Details
-                        </button>
-                        <div id="details-${sanitizedId}" class="collapse mt-3">
-                            <pre>${JSON.stringify(result, null, 2)}</pre>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            ${result.tribunal}
+                            <span class="badge bg-${
+                              result.grau === "1º Grau"
+                                ? "primary"
+                                : "secondary"
+                            }">${result.grau}</span>
                         </div>
-                    </div>
-                `;
+                        <div class="card-body">
+                            <p><strong>Número:</strong> ${
+                              result.numeroProcesso
+                            }</p>
+                            <p><strong>Classe:</strong> ${
+                              result.classe.nome
+                            }</p>
+                            <p><strong>Data de Ajuizamento:</strong> ${new Date(
+                              result.dataAjuizamento
+                            ).toLocaleDateString()}</p>
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#details-${sanitizedId}">
+                                <i class="fas fa-info-circle"></i> Show Details
+                            </button>
+                            <div id="details-${sanitizedId}" class="collapse mt-3">
+                                <pre>${JSON.stringify(result, null, 2)}</pre>
+                            </div>
+                        </div>
+                    `;
           resultsContainer.appendChild(resultElement);
         });
+        resultsContainer.classList.add("fade-in");
+      })
+      .finally(() => {
+        setLoading(searchButton, false);
       });
   });
 });

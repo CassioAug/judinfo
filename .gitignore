@@ -70,3 +70,4 @@ venv.bak/
 
 # Log files
 flask_output.log
+server.log
