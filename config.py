@@ -1,4 +1,14 @@
-# API pública do DataJud conforme disponibiLizado em:
+import os
+from pathlib import Path
+
+try:
+    from dotenv import load_dotenv
+    ROOT_DIR = Path(__file__).resolve().parent
+    load_dotenv(ROOT_DIR / ".env")
+except Exception:
+    pass
+
+# API pública do DataJud conforme disponibilizado em:
 # https://datajud-wiki.cnj.jus.br/api-publica/acesso
-# Em caso de problemas com a API, verificar se não foi alterada.
-API_KEY = "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw=="
+# Suporta sobreposição opcional via variável de ambiente DATAJUD_API_KEY no arquivo .env
+API_KEY = os.getenv("DATAJUD_API_KEY", "cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==")
